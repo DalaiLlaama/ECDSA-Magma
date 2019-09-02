@@ -5,3 +5,6 @@ A small field is used, so we have numbers and points that are easy to grapple wi
 - Generate a signature
 - Verify the signature
 - Perform EC-Recover and verify
+
+
+Run Magma at http://magma.maths.usyd.edu.au/calc/
