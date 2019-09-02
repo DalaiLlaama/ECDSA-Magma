@@ -1,0 +1,80 @@
+// ECDSA
+F:=GF(71);
+
+// Curve is y^2=x^3 - 5x + 8
+E:=EllipticCurve([F|-5,8]);
+
+P:=E![66,60];
+"G: ", 1*P;
+//[2*P,3*P,4*P,5*P,6*P,7*P,8*P,9*P,10*P,11*P,12*P,13*P,14*P,15*P,16*P];
+"Subgroup order:", Order(P);
+
+int:=IntegerRing();
+OP := int ! Order(P);
+Type(OP);OP;
+
+// Signer's keys
+PrivK:=10;
+PubK:=PrivK*P;
+"public key: ", PubK;
+
+"\nSignature generation";
+// Random number, and its point
+z:=43;
+k:=26;
+R:=k*P;
+r:=R[1];
+"k:", k, "R:", R, " r:", r;
+
+// s=1/k * (z + r * PrivK)
+kInv:=Modinv(k,OP);
+"1/k:", kInv;
+s1:=(int!r) * PrivK; s1;
+s2:=s1 + z; s2;
+s:=(kInv * s2) mod OP;
+"Signature (s):", s;
+
+// Verification
+"\nVerification";
+// u1=1/s * z (mod n)
+sInv:=Modinv(s,OP);
+u1:=(sInv * z) mod OP; "u1:",u1;
+// u2=1/s * r (mod n)
+ri := int!r;
+u2:=(sInv * ri) mod OP; "u2:", u2;
+v1:=u1*P;
+"v1:", v1;
+//P2:=E![PubK];
+v2:=70*PubK; "v2:",v2;
+
+v:=v1+v2;
+"v:", v;
+
+if r eq v[1] then
+    "signature matches";
+else
+    "no match";
+end if;
+
+
+// ECRECOVER
+"\n\nEC-RECOVER";
+
+RPts:=Points(E, r);
+"Points on the curve at r:", RPts;
+rInv:=Modinv(int!r, OP);
+"1/r mod n:", rInv;
+"Recovered public key candidates"; 
+//sR-zG
+rr1:=s*RPts[1] - z*P;
+c1:=rInv*rr1;
+"Candidate 1:", c1;
+rr2:=s*RPts[2] - z*P;
+c2:=rInv*rr2;
+"Candidate 2:", c2;
+if PubK eq c1 then
+    "Candidate 1 matches";
+end if; 
+if PubK eq c2 then
+    "Candidate 2 matches";
+end if;    
