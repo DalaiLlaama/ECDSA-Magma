@@ -11,12 +11,12 @@ P:=E![66,60];
 
 int:=IntegerRing();
 OP := int ! Order(P);
-Type(OP);OP;
+//Type(OP);OP;
 
 // Signer's keys
 PrivK:=10;
 PubK:=PrivK*P;
-"public key: ", PubK;
+"Private key:", PrivK ," Public key: ", PubK;
 
 "\nSignature generation";
 // Random number, and its point
@@ -29,9 +29,9 @@ r:=R[1];
 // s=1/k * (z + r * PrivK)
 kInv:=Modinv(k,OP);
 "1/k:", kInv;
-s1:=(int!r) * PrivK; s1;
-s2:=s1 + z; s2;
-s:=(kInv * s2) mod OP;
+s1:=(int!r) * PrivK + z; s1;
+//s2:=s1 + z; s2;
+s:=(kInv * s1) mod OP;
 "Signature (s):", s;
 
 // Verification
